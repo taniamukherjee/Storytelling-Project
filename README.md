@@ -9,8 +9,8 @@ Datasourse : Rolling stone top500 album  (.csv)
              Billloard API 
              
 Project plan : compare the top 500 album from rolling stone with billboard and look at it from a critical standpoint. 
-               we want to find if there is any corelation between popularity vs critical acclaim.
-               look at them filtered by genre, decades , artists etc  
-               look for bias between older and newer digital albums.
+               We want to find if there is any corelation between popularity vs critical acclaim.
+               Look at them filtered by genre, decades , artists etc  
+               Look for bias between older and newer digital albums.
                
 Plans to use : sqllite, plotly, bootstrap webscrape 
