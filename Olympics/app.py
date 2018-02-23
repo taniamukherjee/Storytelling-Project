@@ -39,8 +39,8 @@ for column in columns:
 app = Flask(__name__)
 
 #create route to return possible gender options for select menu
-@app.route('/genders')
-def genders():
+@app.route('/fetch_genders')
+def fetch_genders():
     #get possible gender values
     gender_list = []
     response = session.query(distinct(medals.gender)).all()
@@ -52,9 +52,9 @@ def genders():
     return jsonify(gender_list)
 
 #create route to return possible medal options for select menu
-@app.route('/medals')
-def medals_route():
-    #get possible gender values
+@app.route('/fetch_medals')
+def fetch_medals():
+    #get possible medal values
     medal_list = []
     response = session.query(distinct(medals.medal)).all()
     for medal in response:
@@ -64,52 +64,117 @@ def medals_route():
     #return response object
     return jsonify(medal_list)
 
+@app.route('/fetch_sports')
+def fetch_sports():
+    #get possible sport values
+    sport_list = []
+    response = session.query(distinct(medals.sport)).all()
+    for sport in response:
+        temp = sport
+        sport_list.append(sport)
+    
+    #return response object
+    return jsonify(sport_list)
+
+@app.route('/fetch_years')
+def fetch_years():
+    #get possible year values
+    year_list = []
+    response = session.query(distinct(medals.year)).all()
+    for year in response:
+        temp = year
+        year_list.append(year)
+    
+    #return response object
+    return jsonify(year_list)
+
+@app.route('/fetch_countries')
+def fetch_countries():
+    #get possible gender values
+    country_list = []
+    response = session.query(distinct(medals.country)).order_by(medals.country).all()
+    for country in response:
+        temp = country
+        country_list.append(country)
+    
+    #return response object
+    return jsonify(country_list)
+
 #create route to return data for charts
-@app.route('/data_by_country_filtered/<gender>/<medal_type>')
-def data_by_country(gender,medal_type):
+@app.route('/data_by_country_filtered/<gender>/<sport>/<demo_variable>')
+def data_by_country(gender,sport,demo_variable):
     # get medal info
 
-    #filter by medal type and gender
-    if gender!='All' and medal_type!='All':
-        number_of_sports_with_medals_won = session.query(medals.year,medals.country,func.count(distinct(medals.sport))).filter(medals.gender==gender).filter(medals.medal==medal_type).group_by(medals.year).group_by(medals.country).all() 
-        number_of_medals_won = session.query(medals.year,medals.country,func.count(medals.sport)).group_by(medals.year).filter(medals.gender==gender).filter(medals.medal==medal_type).group_by(medals.country).all()
+    #filter by medal type, gender, sport 
+    #maybe in the future filter by event as well
+    queries = []
+    print(queries)
+    if gender!='All':
+        queries.append(medals.gender==gender)
+    if sport!='All':
+        queries.append(medals.sport==sport)
+#    if event!='All':
+#        queries.append(medals.event==event)
 
-    #just filter by type of medal
-    elif gender=='All' and medal_type!='All':
-        number_of_sports_with_medals_won = session.query(medals.year,medals.country,func.count(distinct(medals.sport))).filter(medals.medal==medal_type).group_by(medals.year).group_by(medals.country).all() 
-        number_of_medals_won = session.query(medals.year,medals.country,func.count(medals.sport)).group_by(medals.year).filter(medals.medal==medal_type).group_by(medals.country).all()
+    #set up query list for each medal type
 
-    #just filter by gender
-    elif gender!='All' and medal_type=='All':
-        number_of_sports_with_medals_won = session.query(medals.year,medals.country,func.count(distinct(medals.sport))).filter(medals.gender==gender).group_by(medals.year).group_by(medals.country).all() 
-        number_of_medals_won = session.query(medals.year,medals.country,func.count(medals.sport)).group_by(medals.year).filter(medals.gender==gender).group_by(medals.country).all() 
-
-    #no filter
-    else:
-        number_of_sports_with_medals_won = session.query(medals.year,medals.country,func.count(distinct(medals.sport))).group_by(medals.year).group_by(medals.country).all() 
-        number_of_medals_won = session.query(medals.year,medals.country,func.count(medals.sport)).group_by(medals.year).group_by(medals.country).all() 
+    #bronze
+    queries_bronze = queries[:]
+    queries_bronze.append(medals.medal=='bronze')
     
-    num_sports_with_medal_object = {}
-    #unpack list of tuples for number of sports with medals won
-    for row in number_of_sports_with_medals_won:
-        year,country,num_sports_with_medal = row
-        if country not in num_sports_with_medal_object.keys():
-            num_sports_with_medal_object.update({country:{'year':[],'num_sports_with_medal':[]}})
-        num_sports_with_medal_object[country]['year'].append(year)
-        num_sports_with_medal_object[country]['num_sports_with_medal'].append(num_sports_with_medal)
+    #silver
+    queries_silver = queries[:]
+    queries_silver.append(medals.medal=='silver')
+    
+    #gold
+    queries_gold = queries[:]
+    queries_gold.append(medals.medal=='gold')
 
-    num_medal_object = {}
-    #unpack list of tuples for number of sports with medals won
-    for row in number_of_medals_won:
+    #find number of bronze medals, silver medals, gold medals, all medals
+    bronze_query = session.query(medals.year,medals.country,func.count(medals.id)).filter(*queries_bronze).group_by(medals.year).group_by(medals.country).all()
+    silver_query = session.query(medals.year,medals.country,func.count(medals.id)).filter(*queries_silver).group_by(medals.year).group_by(medals.country).all()
+    gold_query = session.query(medals.year,medals.country,func.count(medals.id)).filter(*queries_gold).group_by(medals.year).group_by(medals.country).all()
+    all_medals_query = session.query(medals.year,medals.country,func.count(medals.id)).filter(*queries).group_by(medals.year).group_by(medals.country).all()
+
+    num_bronze_object = {}
+    #unpack list of tuples for number of bronze medals
+    for row in bronze_query:
+        year,country,num_bronze = row
+        if country not in num_bronze_object.keys():
+            num_bronze_object.update({country:{'year':[],'num_medals':[]}})
+        num_bronze_object[country]['year'].append(year)
+        num_bronze_object[country]['num_medals'].append(num_bronze)
+
+    num_silver_object = {}
+    #unpack list of tuples for number of silver medals
+    for row in silver_query:
+        year,country,num_silver = row
+        if country not in num_silver_object.keys():
+            num_silver_object.update({country:{'year':[],'num_medals':[]}})
+        num_silver_object[country]['year'].append(year)
+        num_silver_object[country]['num_medals'].append(num_silver)
+
+    num_gold_object = {}
+    #unpack list of tuples for number of gold medals
+    for row in gold_query:
+        year,country,num_gold = row
+        if country not in num_gold_object.keys():
+            num_gold_object.update({country:{'year':[],'num_medals':[]}})
+        num_gold_object[country]['year'].append(year)
+        num_gold_object[country]['num_medals'].append(num_gold)
+
+    num_medals_object = {}
+    #unpack list of tuples for number of medals
+    for row in all_medals_query:
         year,country,num_medals = row
-        if country not in num_medal_object.keys():
-            num_medal_object.update({country:{'year':[],'num_medals':[]}})
-        num_medal_object[country]['year'].append(year)
-        num_medal_object[country]['num_medals'].append(num_medals)
+        if country not in num_medals_object.keys():
+            num_medals_object.update({country:{'year':[],'num_medals':[]}})
+        num_medals_object[country]['year'].append(year)
+        num_medals_object[country]['num_medals'].append(num_medals)
 
 
    #build response object
-    response_object = {'number_of_sports_with_medals_won': num_sports_with_medal_object,'number_of_medals_won': num_medal_object}
+    response_object = {'bronze':num_bronze_object, 'silver':num_silver_object, 'gold':num_gold_object, 'All':num_medals_object}
     
     #return response object
     return jsonify(response_object)
@@ -120,6 +185,15 @@ def data_by_country(gender,medal_type):
 def home():
     return render_template("index.html")
 
+#create route that renders medal_page.html template
+@app.route("/medal_page")
+def medal_page():
+    return render_template("medal_page.html")
+
+#create route that renders map.html template
+@app.route("/map")
+def map():
+    return render_template("map.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
