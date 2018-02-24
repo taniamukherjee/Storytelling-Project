@@ -208,10 +208,10 @@ def stacked_bar_chart(gender,sport,year):
     queries_gold.append(medals.medal=='gold')
 
     #find number of bronze medals, silver medals, gold medals, all medals
-    bronze_query = session.query(medals.year,medals.country,func.count(medals.id)).filter(*queries_bronze).group_by(medals.year).group_by(medals.country).all()
-    silver_query = session.query(medals.year,medals.country,func.count(medals.id)).filter(*queries_silver).group_by(medals.year).group_by(medals.country).all()
-    gold_query = session.query(medals.year,medals.country,func.count(medals.id)).filter(*queries_gold).group_by(medals.year).group_by(medals.country).all()
-    all_medals_query = session.query(medals.year,medals.country,func.count(medals.id)).filter(*queries).group_by(medals.year).group_by(medals.country).all()
+    bronze_query = session.query(medals.year,medals.country,func.count(medals.id)).filter(*queries_bronze).group_by(medals.country).all()
+    silver_query = session.query(medals.year,medals.country,func.count(medals.id)).filter(*queries_silver).group_by(medals.country).all()
+    gold_query = session.query(medals.year,medals.country,func.count(medals.id)).filter(*queries_gold).group_by(medals.country).all()
+    all_medals_query = session.query(medals.year,medals.country,func.count(medals.id)).filter(*queries).group_by(medals.country).all()
 
 
     #set up query list for each medal type
