@@ -51,11 +51,19 @@
                     <div class="jumbotron">
                         <div class="text-center">
                             <p>Select Country:</p>
-                            <select id="countrySelect" onchange="optionChanged()"></select>
+                            <div class="row">
+                                <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                    <select id="countrySelect" onchange="optionChanged()"></select>
+                                </div>
+<!--                                 <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                    <select id="countrySelect2" onchange="optionChanged()"></select>
+                                </div> -->
+                            </div>
                         </div>
                     </div>
             </div>
         </div>
+        <div id='stackedBar'></div>
     </div>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="nouislider.min.js"></script>

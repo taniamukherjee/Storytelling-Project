@@ -141,9 +141,10 @@ def data_by_country(gender,sport,demo_variable):
     for row in bronze_query:
         year,country,num_bronze = row
         if country not in num_bronze_object.keys():
-            num_bronze_object.update({country:{'year':[],'num_medals':[]}})
+            num_bronze_object.update({country:{'year':[],'num_medals':[],'name':''}})
         num_bronze_object[country]['year'].append(year)
         num_bronze_object[country]['num_medals'].append(num_bronze)
+        num_bronze_object[country]['name'] = country
 
     num_silver_object = {}
     #unpack list of tuples for number of silver medals
@@ -153,6 +154,7 @@ def data_by_country(gender,sport,demo_variable):
             num_silver_object.update({country:{'year':[],'num_medals':[]}})
         num_silver_object[country]['year'].append(year)
         num_silver_object[country]['num_medals'].append(num_silver)
+        num_silver_object[country]['name'] = country
 
     num_gold_object = {}
     #unpack list of tuples for number of gold medals
@@ -162,6 +164,7 @@ def data_by_country(gender,sport,demo_variable):
             num_gold_object.update({country:{'year':[],'num_medals':[]}})
         num_gold_object[country]['year'].append(year)
         num_gold_object[country]['num_medals'].append(num_gold)
+        num_gold_object[country]['name'] = country
 
     num_medals_object = {}
     #unpack list of tuples for number of medals
@@ -171,6 +174,7 @@ def data_by_country(gender,sport,demo_variable):
             num_medals_object.update({country:{'year':[],'num_medals':[]}})
         num_medals_object[country]['year'].append(year)
         num_medals_object[country]['num_medals'].append(num_medals)
+        num_medals_object[country]['name'] = country
 
 
    #build response object
@@ -178,6 +182,111 @@ def data_by_country(gender,sport,demo_variable):
     
     #return response object
     return jsonify(response_object)
+
+
+#create route to return data for charts
+@app.route('/stacked_bar_chart/<gender>/<sport>/<year>')
+def stacked_bar_chart(gender,sport,year):
+    # get medal info
+
+    #filter by medal type, gender, sport 
+    #maybe in the future filter by event as well
+    queries = []
+    print(queries)
+    if gender!='All':
+        queries.append(medals.gender==gender)
+    if sport!='All':
+        queries.append(medals.sport==sport)
+    if year!='All':
+        queries.append(medals.year==year)
+
+    queries_bronze = queries[:]
+    queries_bronze.append(medals.medal=='bronze')
+    queries_silver = queries[:]
+    queries_silver.append(medals.medal=='silver')
+    queries_gold = queries[:]
+    queries_gold.append(medals.medal=='gold')
+
+    #find number of bronze medals, silver medals, gold medals, all medals
+    bronze_query = session.query(medals.year,medals.country,func.count(medals.id)).filter(*queries_bronze).group_by(medals.year).group_by(medals.country).all()
+    silver_query = session.query(medals.year,medals.country,func.count(medals.id)).filter(*queries_silver).group_by(medals.year).group_by(medals.country).all()
+    gold_query = session.query(medals.year,medals.country,func.count(medals.id)).filter(*queries_gold).group_by(medals.year).group_by(medals.country).all()
+    all_medals_query = session.query(medals.year,medals.country,func.count(medals.id)).filter(*queries).group_by(medals.year).group_by(medals.country).all()
+
+
+    #set up query list for each medal type
+    num_bronze_object = {}
+    #unpack list of tuples for number of medals
+    for row in bronze_query:
+        year,country,num_medals = row
+        if country not in num_bronze_object.keys():
+            num_bronze_object.update({country:{'year':[],'num_medals':[],'name':'','medal_total':0}})
+        num_bronze_object[country]['year'].append(year)
+        num_bronze_object[country]['num_medals'].append(num_medals)
+        num_bronze_object[country]['name'] = country
+        num_bronze_object[country]['medal_total'] = num_medals
+    #print(num_medals)
+    
+    num_silver_object = {}
+    #unpack list of tuples for number of medals
+    for row in silver_query:
+        year,country,num_medals = row
+        if country not in num_silver_object.keys():
+            num_silver_object.update({country:{'year':[],'num_medals':[],'name':'','medal_total':0}})
+        num_silver_object[country]['year'].append(year)
+        num_silver_object[country]['num_medals'].append(num_medals)
+        num_silver_object[country]['name'] = country
+        num_silver_object[country]['medal_total'] = num_medals
+            
+    num_gold_object = {}
+    #unpack list of tuples for number of medals
+    for row in gold_query:
+        year,country,num_medals = row
+        if country not in num_gold_object.keys():
+            num_gold_object.update({country:{'year':[],'num_medals':[],'name':'','medal_total':0}})
+        num_gold_object[country]['year'].append(year)
+        num_gold_object[country]['num_medals'].append(num_medals)
+        num_gold_object[country]['name'] = country
+        num_gold_object[country]['medal_total'] = num_medals
+
+    num_medals_object = {}
+    country_list = []
+    #unpack list of tuples for number of medals
+    for row in all_medals_query:
+        year,country,num_medals = row
+        if country not in num_medals_object.keys():
+            num_medals_object.update({country:{'year':[],'num_medals':[],'name':'','medal_total':0}})
+            country_list.append(country)
+        num_medals_object[country]['year'].append(year)
+        num_medals_object[country]['num_medals'].append(num_medals)
+        num_medals_object[country]['medal_total'] = num_medals
+
+    all_countries_list = num_medals_object.keys()
+    bronze_list = []
+    silver_list = []
+    gold_list = []
+
+    for country in all_countries_list:
+        if country in num_bronze_object:
+            bronze_list.append(num_bronze_object[country]['medal_total'])
+        else:
+            bronze_list.append(0)
+        if country in num_silver_object:
+            silver_list.append(num_silver_object[country]['medal_total'])
+        else:
+            silver_list.append(0)
+        if country in num_gold_object:
+            gold_list.append(num_gold_object[country]['medal_total'])
+        else:
+            gold_list.append(0)
+        
+
+   #build response object
+    response_object = {'bronze':num_bronze_object, 'silver':num_silver_object, 'gold':num_gold_object, 'All':num_medals_object,'countries':country_list,'bronze_data':bronze_list,'silver_data':silver_list,'gold_data':gold_list}
+    
+    #return response object
+    return jsonify(response_object)
+
 
 
 # create route that renders index.html template

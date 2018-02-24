@@ -111,10 +111,39 @@ Plotly.d3.json(countriesUrl, function (error, response) {
 });
 
 function optionChanged() {
+//    buildStackedBar()
+//    buildComparisonLineChart()
     //get medal data
-    medalDataUrl = `/data_by_country_filtered/${$genderSelectList.value}/${$sportSelectList.value}/demo_var_placeholder`;
+    medalDataUrl = `/stacked_bar_chart/${$genderSelectList.value}/${$sportSelectList.value}/${$yearSelectList.value}`;
     Plotly.d3.json(medalDataUrl, function (error, response) {
-        console.log('The data for the given filters is: ')
-        console.log(response);
+        countriesToPlot = response.countries;
+        bronzeData = response.bronze_data;
+        silverData = response.silver_data;
+        goldData = response.gold_data;
+
+        var bronzeTrace = {
+            x: countriesToPlot,
+            y: bronzeData,
+            name: 'bronze',
+            type: 'bar'
+          };
+
+        var silverTrace = {
+            x: countriesToPlot,
+            y: silverData,
+            name: 'silver',
+            type: 'bar'
+          };
+
+          var goldTrace = {
+            x: countriesToPlot,
+            y: goldData,
+            name: 'gold',
+            type: 'bar'
+          };
+
+        var data = [bronzeTrace,silverTrace,goldTrace];
+        var layout = {barmode: 'stack'};
+        Plotly.newPlot('stackedBar', data, layout);
     });
 }
