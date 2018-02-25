@@ -22,6 +22,9 @@ Base.prepare(engine, reflect=True)
 
 # save reference to tables
 medals = Base.classes.medals
+temperature = Base.classes.temperature
+population = Base.classes.population
+gdp = Base.classes.gdp
 
 # create session to query tables
 session = Session(engine)
@@ -360,20 +363,106 @@ def comparison_line_plot(gender,sport,medal,country1,country2):
     #return response object
     return jsonify(response_object)
 
+#create route to return data for cumulative line plot
+@app.route('/demographic_scatter_plot/<gender>/<sport>/<medal>/<year>/<demographic>')
+def demographic_scatter_plot(gender,sport,medal,year,demographic):
+    # get medal info
+
+    #filter by medal type, gender, sport 
+    #maybe in the future filter by event as well
+    queries = []
+    demographic_query = []
+    print(queries)
+    if gender!='All':
+        queries.append(medals.gender==gender)
+    if sport!='All':
+        queries.append(medals.sport==sport)
+    if medal!='All':
+        queries.append(medals.medal==medal)
+    if year!='All':
+        queries.append(medals.year==year)
+
+    query_response = session.query(medals.country,func.count(medals.id)).filter(*query_country1).group_by(medals.country).all()
+    if demographic=='Population' and year != 'All':
+        demographic_query.append(population.year==year)
+        demographic_query_response = session.query(population.country,func.avg(population.population),population.year).filter(*demographic_query).group_by(population.country).all()
+        country_list = session.query(distinct(population.country)).all()
+    elif demographic=='Population' and year == 'All':
+        demographic_query_response = session.query(population.country,func.avg(population.population)).group_by(population.country).all()
+        country_list = session.query(distinct(population.country)).all()
+    elif demographic=='GDP' and year != 'All':
+        demographic_query.append(gdp.year==year)
+        demographic_query_response = session.query(gdp.country,func.avg(gdp.gdp),population.year).filter(*demographic_query).group_by(gdp.country).all()
+        country_list = session.query(distinct(gdp.country)).all()
+    elif demographic=='GDP' and year == 'All':
+        demographic_query_response = session.query(gdp.country,func.avg(gdp.gdp)).group_by(gdp.country).all()
+        country_list = session.query(distinct(gdp.country)).all()
+    elif demographic=='Temperature':
+        demographic_query_response = session.query(temperature.country,temperature.temperature).all()
+        country_list = session.query(distinct(temperature.country)).all()
+
+###########################################################################################
+#
+#
+#
+#
+#stopped here
+    #############################################
+    #
+    #
+    #remove return
+    return(0)
+'''     country1_object = {}
+    #unpack list of tuples for number of medals for country 1
+    for row in country1_response:
+        year,country,num_medals = row
+        if country not in country1_object.keys():
+            country1_object.update({country:{'year':[],'num_medals':[]}})
+        country1_object[country]['year'].append(year)
+        country1_object[country]['num_medals'].append(num_medals)
+
+    if(country1_object=={}):
+        country1_object.update({country1:{'year':[],'num_medals':[]}})
+
+    country1_medal_list = []
+    for year in year_list:
+        medals_for_year = 0
+        if year in country1_object[country1]['year']:
+            year_index = country1_object[country1]['year'].index(year)
+            medals_for_year = country1_object[country1]['num_medals'][year_index]
+        country1_medal_list.append(medals_for_year)
+    
+    country2_object = {}
+    #unpack list of tuples for number of medals for country 1
+    for row in country2_response:
+        year,country,num_medals = row
+        if country not in country2_object.keys():
+            country2_object.update({country:{'year':[],'num_medals':[]}})
+        country2_object[country]['year'].append(year)
+        country2_object[country]['num_medals'].append(num_medals)
+
+    if(country2_object=={}):
+        country2_object.update({country2:{'year':[],'num_medals':[]}})
+
+    country2_medal_list = []
+    for year in year_list:
+        medals_for_year = 0
+        if year in country2_object[country2]['year']:
+            year_index = country2_object[country2]['year'].index(year)
+            medals_for_year = country2_object[country2]['num_medals'][year_index]
+        country2_medal_list.append(medals_for_year)        
+
+    #build response object
+    response_object = {'country1_object':country1_object,'country2_object':country2_object,'years':year_list,'country1':country1_medal_list,'country2':country2_medal_list}    
+
+    #return response object
+    return jsonify(response_object) '''
+    
+
 # create route that renders index.html template
 @app.route("/")
 def home():
     return render_template("index.html")
-
-#create route that renders medal_page.html template
-@app.route("/medal_page")
-def medal_page():
-    return render_template("medal_page.html")
-
-#create route that renders map.html template
-@app.route("/map")
-def map():
-    return render_template("map.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
