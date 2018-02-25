@@ -287,7 +287,78 @@ def stacked_bar_chart(gender,sport,year):
     #return response object
     return jsonify(response_object)
 
+#create route to return data for cumulative line plot
+@app.route('/cumulative_line_plot/<gender>/<sport>/<medal>/<country1>/<country2>')
+def comparison_line_plot(gender,sport,medal,country1,country2):
+    # get medal info
 
+    #filter by medal type, gender, sport 
+    #maybe in the future filter by event as well
+    queries = []
+    print(queries)
+    if gender!='All':
+        queries.append(medals.gender==gender)
+    if sport!='All':
+        queries.append(medals.sport==sport)
+    if medal!='All':
+        queries.append(medals.medal==medal)
+
+    query_country1 = queries[:]
+    query_country1.append(medals.country==country1)
+    query_country2 = queries[:]
+    query_country2.append(medals.country==country2)
+
+    country1_response = session.query(medals.year,medals.country,func.count(medals.id)).filter(*query_country1).group_by(medals.year).all()
+    country2_response = session.query(medals.year,medals.country,func.count(medals.id)).filter(*query_country2).group_by(medals.year).all()
+
+    #set up query list for all medal types
+    year_list = [1924,1928,1932,1936,1948,1952,1956,1960,1964,1968,1972,1976,1980,1984,1988,1992,1994,1998,2002,2006,2010,2014]
+
+    country1_object = {}
+    #unpack list of tuples for number of medals for country 1
+    for row in country1_response:
+        year,country,num_medals = row
+        if country not in country1_object.keys():
+            country1_object.update({country:{'year':[],'num_medals':[]}})
+        country1_object[country]['year'].append(year)
+        country1_object[country]['num_medals'].append(num_medals)
+
+    if(country1_object=={}):
+        country1_object.update({country1:{'year':[],'num_medals':[]}})
+
+    country1_medal_list = []
+    for year in year_list:
+        medals_for_year = 0
+        if year in country1_object[country1]['year']:
+            year_index = country1_object[country1]['year'].index(year)
+            medals_for_year = country1_object[country1]['num_medals'][year_index]
+        country1_medal_list.append(medals_for_year)
+    
+    country2_object = {}
+    #unpack list of tuples for number of medals for country 1
+    for row in country2_response:
+        year,country,num_medals = row
+        if country not in country2_object.keys():
+            country2_object.update({country:{'year':[],'num_medals':[]}})
+        country2_object[country]['year'].append(year)
+        country2_object[country]['num_medals'].append(num_medals)
+
+    if(country2_object=={}):
+        country2_object.update({country2:{'year':[],'num_medals':[]}})
+
+    country2_medal_list = []
+    for year in year_list:
+        medals_for_year = 0
+        if year in country2_object[country2]['year']:
+            year_index = country2_object[country2]['year'].index(year)
+            medals_for_year = country2_object[country2]['num_medals'][year_index]
+        country2_medal_list.append(medals_for_year)        
+
+    #build response object
+    response_object = {'country1_object':country1_object,'country2_object':country2_object,'years':year_list,'country1':country1_medal_list,'country2':country2_medal_list}    
+
+    #return response object
+    return jsonify(response_object)
 
 # create route that renders index.html template
 @app.route("/")

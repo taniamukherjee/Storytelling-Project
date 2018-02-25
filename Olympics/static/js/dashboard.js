@@ -205,11 +205,24 @@ function optionChangedComparisonCharts() {
     console.log(`Sport: ${$sportSelectListCumulativeLine.value}`);
     console.log(`Country 1: ${$countrySelectListCumulativeLine1.value}`);
     console.log(`Country 2: ${$countrySelectListCumulativeLine2.value}`);
-    //comparisonDataUrl = `/cumulative_line_plot/${$genderSelectList.value}/${$sportSelectList.value}/${$country1SelectList.value}/${$country2SelectList.value}`;
-    //Plotly.d3.json(comparisonDataUrl, function (error, response) {
-
-
-    //});
+    comparisonDataUrl = `/cumulative_line_plot/${$genderSelectListCumulativeLine.value}/${$sportSelectListCumulativeLine.value}/${$medalSelectListCumulativeLine.value}/${$countrySelectListCumulativeLine1.value}/${$countrySelectListCumulativeLine2.value}`;
+    if ($countrySelectListCumulativeLine1.value==='Country 1' || $countrySelectListCumulativeLine2.value==='Country 2' || $countrySelectListCumulativeLine1.value===$countrySelectListCumulativeLine2.value){
+        console.log("Please select two unique countries to compare!")
+    }
+    else{
+        Plotly.d3.json(comparisonDataUrl, function (error, response) {
+            if (error){
+                console.log(error);
+            }
+            country1Medals = response.country1;
+            country2Medals = response.country2;
+            yearsToPlot = response.years;
+            console.log(country1Medals);
+            console.log(country2Medals);
+            console.log(yearsToPlot);
+    
+        });
+    }
 }
 
 function optionChangedDemographicScatter() {
