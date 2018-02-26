@@ -2,7 +2,7 @@
 gendersUrl = "/fetch_genders";
 Plotly.d3.json(gendersUrl, function (error, response) {
     if (error) console.log(error);
-    genderList = ['All'];
+    genderList = ['All Genders'];
     for (var i = 0; i < response.length; i++) {
         genderList.push(response[i]);
     }
@@ -32,7 +32,7 @@ Plotly.d3.json(gendersUrl, function (error, response) {
 medalsUrl = "/fetch_medals";
 Plotly.d3.json(medalsUrl, function (error, response) {
     if (error) console.log(error);
-    medalList = ['All'];
+    medalList = ['All Medal Types'];
     for (var i = 0; i < response.length; i++) {
         medalList.push(response[i]);
     }
@@ -56,7 +56,7 @@ Plotly.d3.json(medalsUrl, function (error, response) {
 sportsUrl = "/fetch_sports";
 Plotly.d3.json(sportsUrl, function (error, response) {
     if (error) console.log(error);
-    sportList = ['All'];
+    sportList = ['All Sports'];
     for (var i = 0; i < response.length; i++) {
         sportList.push(response[i]);
     }
@@ -107,7 +107,7 @@ Plotly.d3.json(eventsUrl, function (error, response) {
 yearsUrl = "/fetch_years";
 Plotly.d3.json(yearsUrl, function (error, response) {
     if (error) console.log(error);
-    yearList = ['All'];
+    yearList = ['All Years'];
     for (var i = 0; i < response.length; i++) {
         yearList.push(response[i]);
     }
@@ -124,7 +124,7 @@ Plotly.d3.json(yearsUrl, function (error, response) {
 yearsUrl = "/fetch_years_demographics"
 Plotly.d3.json(yearsUrl, function (error, response) {
     if (error) console.log(error);
-    yearList = ['All'];
+    yearList = ['All Years'];
     for (var i = 0; i < response.length; i++) {
         yearList.push(response[i]);
     }

@@ -116,89 +116,6 @@ def fetch_countries():
     return jsonify(country_list)
 
 #create route to return data for charts
-@app.route('/data_by_country_filtered/<gender>/<sport>/<demo_variable>')
-def data_by_country(gender,sport,demo_variable):
-    # get medal info
-
-    #filter by medal type, gender, sport 
-    #maybe in the future filter by event as well
-    queries = []
-    if gender!='All':
-        queries.append(medals.gender==gender)
-    if sport!='All':
-        queries.append(medals.sport==sport)
-#    if event!='All':
-#        queries.append(medals.event==event)
-
-    #set up query list for each medal type
-
-    #bronze
-    queries_bronze = queries[:]
-    queries_bronze.append(medals.medal=='bronze')
-    
-    #silver
-    queries_silver = queries[:]
-    queries_silver.append(medals.medal=='silver')
-    
-    #gold
-    queries_gold = queries[:]
-    queries_gold.append(medals.medal=='gold')
-
-    #find number of bronze medals, silver medals, gold medals, all medals
-    bronze_query = session.query(medals.year,medals.country,func.count(medals.id)).filter(*queries_bronze).group_by(medals.year).group_by(medals.country).all()
-    silver_query = session.query(medals.year,medals.country,func.count(medals.id)).filter(*queries_silver).group_by(medals.year).group_by(medals.country).all()
-    gold_query = session.query(medals.year,medals.country,func.count(medals.id)).filter(*queries_gold).group_by(medals.year).group_by(medals.country).all()
-    all_medals_query = session.query(medals.year,medals.country,func.count(medals.id)).filter(*queries).group_by(medals.year).group_by(medals.country).all()
-
-    num_bronze_object = {}
-    #unpack list of tuples for number of bronze medals
-    for row in bronze_query:
-        year,country,num_bronze = row
-        if country not in num_bronze_object.keys():
-            num_bronze_object.update({country:{'year':[],'num_medals':[],'name':''}})
-        num_bronze_object[country]['year'].append(year)
-        num_bronze_object[country]['num_medals'].append(num_bronze)
-        num_bronze_object[country]['name'] = country
-
-    num_silver_object = {}
-    #unpack list of tuples for number of silver medals
-    for row in silver_query:
-        year,country,num_silver = row
-        if country not in num_silver_object.keys():
-            num_silver_object.update({country:{'year':[],'num_medals':[]}})
-        num_silver_object[country]['year'].append(year)
-        num_silver_object[country]['num_medals'].append(num_silver)
-        num_silver_object[country]['name'] = country
-
-    num_gold_object = {}
-    #unpack list of tuples for number of gold medals
-    for row in gold_query:
-        year,country,num_gold = row
-        if country not in num_gold_object.keys():
-            num_gold_object.update({country:{'year':[],'num_medals':[]}})
-        num_gold_object[country]['year'].append(year)
-        num_gold_object[country]['num_medals'].append(num_gold)
-        num_gold_object[country]['name'] = country
-
-    num_medals_object = {}
-    #unpack list of tuples for number of medals
-    for row in all_medals_query:
-        year,country,num_medals = row
-        if country not in num_medals_object.keys():
-            num_medals_object.update({country:{'year':[],'num_medals':[]}})
-        num_medals_object[country]['year'].append(year)
-        num_medals_object[country]['num_medals'].append(num_medals)
-        num_medals_object[country]['name'] = country
-
-
-   #build response object
-    response_object = {'bronze':num_bronze_object, 'silver':num_silver_object, 'gold':num_gold_object, 'All':num_medals_object}
-    
-    #return response object
-    return jsonify(response_object)
-
-
-#create route to return data for charts
 @app.route('/stacked_bar_chart/<gender>/<sport>/<year>')
 def stacked_bar_chart(gender,sport,year):
     # get medal info
@@ -206,11 +123,11 @@ def stacked_bar_chart(gender,sport,year):
     #filter by medal type, gender, sport 
     #maybe in the future filter by event as well
     queries = []
-    if gender!='All':
+    if gender!='All Genders':
         queries.append(medals.gender==gender)
-    if sport!='All':
+    if sport!='All Sports':
         queries.append(medals.sport==sport)
-    if year!='All':
+    if year!='All Years':
         queries.append(medals.year==year)
 
     queries_bronze = queries[:]
@@ -225,7 +142,6 @@ def stacked_bar_chart(gender,sport,year):
     silver_query = session.query(medals.year,medals.country,func.count(medals.id)).filter(*queries_silver).group_by(medals.country).all()
     gold_query = session.query(medals.year,medals.country,func.count(medals.id)).filter(*queries_gold).group_by(medals.country).all()
     all_medals_query = session.query(medals.year,medals.country,func.count(medals.id)).filter(*queries).group_by(medals.country).all()
-
 
     #set up query list for each medal type
     num_bronze_object = {}
@@ -308,11 +224,11 @@ def comparison_line_plot(gender,sport,medal,country1,country2):
     #filter by medal type, gender, sport 
     #maybe in the future filter by event as well
     queries = []
-    if gender!='All':
+    if gender!='All Genders':
         queries.append(medals.gender==gender)
-    if sport!='All':
+    if sport!='All Sports':
         queries.append(medals.sport==sport)
-    if medal!='All':
+    if medal!='All Medal Types':
         queries.append(medals.medal==medal)
 
     query_country1 = queries[:]
@@ -381,30 +297,30 @@ def demographic_scatter_plot(gender,sport,medal,year,demographic):
     #maybe in the future filter by event as well
     queries = []
     demographic_query = []
-    if gender!='All':
+    if gender!='All Genders':
         queries.append(medals.gender==gender)
-    if sport!='All':
+    if sport!='All Sports':
         queries.append(medals.sport==sport)
-    if medal!='All':
+    if medal!='All Medal Types':
         queries.append(medals.medal==medal)
-    if year!='All':
+    if year!='All Years':
         queries.append(medals.year==year)
     else:
         queries.append(medals.year>=1960)
 
     query_response = session.query(medals.country,func.count(medals.id)).filter(*queries).group_by(medals.country).all()
-    if demographic=='Population' and year != 'All':
+    if demographic=='Population' and year != 'All Years':
         demographic_query.append(population.year==year)
         demographic_query_response = session.query(population.country,func.avg(population.population)).filter(*demographic_query).group_by(population.country).all()
         country_query = session.query(distinct(population.country)).all()
-    elif demographic=='Population' and year == 'All':
+    elif demographic=='Population' and year == 'All Years':
         demographic_query_response = session.query(population.country,func.avg(population.population)).group_by(population.country).all()
         country_query = session.query(distinct(population.country)).all()
-    elif demographic=='GDP' and year != 'All':
+    elif demographic=='GDP' and year != 'All Years':
         demographic_query.append(gdp.year==year)
         demographic_query_response = session.query(gdp.country,func.avg(gdp.gdp)).filter(*demographic_query).group_by(gdp.country).all()
         country_query = session.query(distinct(gdp.country)).all()
-    elif demographic=='GDP' and year == 'All':
+    elif demographic=='GDP' and year == 'All Years':
         demographic_query_response = session.query(gdp.country,func.avg(gdp.gdp)).group_by(gdp.country).all()
         country_query = session.query(distinct(gdp.country)).all()
     elif demographic=='Temperature':

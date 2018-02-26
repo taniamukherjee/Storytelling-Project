@@ -15,26 +15,19 @@
 <body>
     <div class="container container-fluid">
         <div class="row">
-            <div class="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
-                <div class="jumbotron">
+            <div class="jumbotron">
+                <div class="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
                     <div class="text-center">
-                        <p>Select Gender:</p>
                         <select id="genderSelectStackedBar" onchange="optionChangedStackedBar()"></select>
                     </div>
                 </div>
-            </div>
-            <div class="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
-                <div class="jumbotron">
+                <div class="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
                     <div class="text-center">
-                        <p>Select Sport:</p>
                         <select id="sportSelectStackedBar" onchange="optionChangedStackedBar()"></select>
                     </div>
                 </div>
-            </div>
-            <div class="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
-                <div class="jumbotron">
+                <div class="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
                     <div class="text-center">
-                        <p>Select Year:</p>
                         <select id="yearSelectStackedBar" onchange="optionChangedStackedBar()"></select>
                     </div>
                 </div>
@@ -46,27 +39,40 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
-                <div class="jumbotron">
+            <div class="jumbotron">
+                <div class="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
                     <div class="text-center">
-                        <p>Select Gender:</p>
                         <select id="genderSelectCumulativeLine" onchange="optionChangedComparisonCharts()"></select>
                     </div>
                 </div>
-            </div>
-            <div class="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2">
-                <div class="jumbotron">
+                <div class="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
                     <div class="text-center">
-                        <p>Select Medal:</p>
                         <select id="medalSelectCumulativeLine" onchange="optionChangedComparisonCharts()"></select>
                     </div>
                 </div>
-            </div>
-            <div class="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
-                <div class="jumbotron">
+                <div class="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
                     <div class="text-center">
-                        <p>Select Sport:</p>
                         <select id="sportSelectCumulativeLine" onchange="optionChangedComparisonCharts()"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-9 col-sm-9 col-md-9 col-lg-9 col-xl-9">
+                    <div id="countryComparisonPlot"></div>
+                </div>
+                <div class="col-3 col-sm-3 col-md-3 col-lg-3 col-xl-3">
+                    <div class="jumbotron">
+                        <div class="text-center">
+                            <p>Select Countries to Compare:</p>
+                            <div class="row">
+                                <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                    <select id="countrySelectCumulativeLine1" onchange="optionChangedComparisonCharts()"></select>
+                                </div>
+                                <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                    <select id="countrySelectCumulativeLine2" onchange="optionChangedComparisonCharts()"></select>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -78,58 +84,37 @@
                     </div>
                 </div>
             </div> -->
-            <div class="col-3 col-sm-3 col-md-3 col-lg-3 col-xl-3">
-                <div class="jumbotron">
-                    <div class="text-center">
-                        <p>Select Country:</p>
-                        <div class="row">
-                            <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                                <select id="countrySelectCumulativeLine1" onchange="optionChangedComparisonCharts()"></select>
-                            </div>
-                            <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                                <select id="countrySelectCumulativeLine2" onchange="optionChangedComparisonCharts()"></select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
+
         <div class="row">
-            <div class="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
-                <div class="jumbotron">
+            <div class="jumbotron">
+                <div class="col-3 col-sm-3 col-md-3 col-lg-3 col-xl-3">
                     <div class="text-center">
-                        <p>Select Gender:</p>
                         <select id="genderSelectDemographicScatter" onchange="optionChangedDemographicScatter()"></select>
                     </div>
                 </div>
-            </div>
-            <div class="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
-                <div class="jumbotron">
+                <div class="col-3 col-sm-3 col-md-3 col-lg-3 col-xl-3">
                     <div class="text-center">
-                        <p>Select Medal:</p>
                         <select id="medalSelectDemographicScatter" onchange="optionChangedDemographicScatter()"></select>
                     </div>
                 </div>
-            </div>
-            <div class="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
-                <div class="jumbotron">
+                <div class="col-3 col-sm-3 col-md-3 col-lg-3 col-xl-3">
                     <div class="text-center">
-                        <p>Select Sport:</p>
                         <select id="sportSelectDemographicScatter" onchange="optionChangedDemographicScatter()"></select>
                     </div>
                 </div>
-            </div>
-            <div class="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
-                <div class="jumbotron">
+                <div class="col-3 col-sm-3 col-md-3 col-lg-3 col-xl-3">
                     <div class="text-center">
-                        <p>Select Year:</p>
                         <select id="yearSelectDemographicScatter" onchange="optionChangedDemographicScatter()"></select>
                     </div>
                 </div>
             </div>
         </div>
         <div class="row">
-            <div class="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+            <div class="col-9 col-sm-9 col-md-9 col-lg-9 col-xl-9">
+                <div id="demographicScatterPlot"></div>
+            </div>
+            <div class="col-3 col-sm-3 col-md-3 col-lg-3 col-xl-3">
                 <div class="jumbotron">
                     <div class="text-center">
                         <p>Select Demographic To Plot:</p>
