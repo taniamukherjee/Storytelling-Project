@@ -6,9 +6,10 @@ Plotly.d3.json(gendersUrl, function (error, response) {
     for (var i = 0; i < response.length; i++) {
         genderList.push(response[i]);
     }
-    console.log(genderList);
+    //console.log(genderList);
     $genderSelectListStackedBar = document.getElementById("genderSelectStackedBar");
     $genderSelectListCumulativeLine = document.getElementById("genderSelectCumulativeLine");
+    $genderSelectListDemographicScatter = document.getElementById("genderSelectDemographicScatter");
     for (var i = 0; i < genderList.length; i++) {
         var $optionStackedBar = document.createElement("option");
         $optionStackedBar.value = genderList[i];
@@ -19,6 +20,11 @@ Plotly.d3.json(gendersUrl, function (error, response) {
         $optionCumulativeLine.value = genderList[i];
         $optionCumulativeLine.text = genderList[i];
         $genderSelectListCumulativeLine.appendChild($optionCumulativeLine);
+
+        var $optionDemographicScatter = document.createElement("option");
+        $optionDemographicScatter.value = genderList[i];
+        $optionDemographicScatter.text = genderList[i];
+        $genderSelectListDemographicScatter.appendChild($optionDemographicScatter);
     }
 });
 
@@ -30,13 +36,19 @@ Plotly.d3.json(medalsUrl, function (error, response) {
     for (var i = 0; i < response.length; i++) {
         medalList.push(response[i]);
     }
-    console.log(medalList);
+    //console.log(medalList);
     $medalSelectListCumulativeLine = document.getElementById("medalSelectCumulativeLine");
+    $medalSelectListDemographicScatter = document.getElementById("medalSelectDemographicScatter");
     for (var i = 0; i < medalList.length; i++) {
-        var $option = document.createElement("option");
-        $option.value = medalList[i];
-        $option.text = medalList[i];
-        $medalSelectListCumulativeLine.appendChild($option);
+        var $optionCumulativeLine = document.createElement("option");
+        $optionCumulativeLine.value = medalList[i];
+        $optionCumulativeLine.text = medalList[i];
+        $medalSelectListCumulativeLine.appendChild($optionCumulativeLine);
+
+        var $optionDemographicScatter = document.createElement("option");
+        $optionDemographicScatter.value = medalList[i];
+        $optionDemographicScatter.text = medalList[i];
+        $medalSelectListDemographicScatter.appendChild($optionDemographicScatter);
     }
 });
 
@@ -48,9 +60,10 @@ Plotly.d3.json(sportsUrl, function (error, response) {
     for (var i = 0; i < response.length; i++) {
         sportList.push(response[i]);
     }
-    console.log(sportList);
+    //console.log(sportList);
     $sportSelectListStackedBar = document.getElementById("sportSelectStackedBar");
     $sportSelectListCumulativeLine = document.getElementById("sportSelectCumulativeLine");
+    $sportSelectListDemographicScatter = document.getElementById("sportSelectDemographicScatter");
     for (var i = 0; i < sportList.length; i++) {
         var $optionStackedBar = document.createElement("option");
         $optionStackedBar.value = sportList[i];
@@ -61,6 +74,11 @@ Plotly.d3.json(sportsUrl, function (error, response) {
         $optionCumulativeLine.value = sportList[i];
         $optionCumulativeLine.text = sportList[i];
         $sportSelectListCumulativeLine.appendChild($optionCumulativeLine);
+
+        var $optionDemographicScatter = document.createElement("option");
+        $optionDemographicScatter.value = sportList[i];
+        $optionDemographicScatter.text = sportList[i];
+        $sportSelectListDemographicScatter.appendChild($optionDemographicScatter);
     }
 });
 
@@ -93,7 +111,7 @@ Plotly.d3.json(yearsUrl, function (error, response) {
     for (var i = 0; i < response.length; i++) {
         yearList.push(response[i]);
     }
-    console.log(yearList);
+    //console.log(yearList);
     $yearSelectListStackedBar = document.getElementById("yearSelectStackedBar");
     for (var i = 0; i < yearList.length; i++) {
         var $option = document.createElement("option");
@@ -102,6 +120,35 @@ Plotly.d3.json(yearsUrl, function (error, response) {
         $yearSelectListStackedBar.appendChild($option);
     }
 });
+
+yearsUrl = "/fetch_years_demographics"
+Plotly.d3.json(yearsUrl, function (error, response) {
+    if (error) console.log(error);
+    yearList = ['All'];
+    for (var i = 0; i < response.length; i++) {
+        yearList.push(response[i]);
+    }
+    console.log("Year List:")
+    console.log(yearList);
+    $yearSelectListDemographics = document.getElementById("yearSelectDemographicScatter");
+    for (var i = 0; i < yearList.length; i++) {
+        var $option = document.createElement("option");
+        $option.value = yearList[i];
+        $option.text = yearList[i];
+        $yearSelectListDemographics.appendChild($option);
+    }
+});
+
+//build demographic select list
+demographicList = ['Population','GDP','Temperature'];
+//console.log(demographicList);
+$demographicSelectList = document.getElementById("demographicSelect");
+for (var i = 0; i < demographicList.length; i++) {
+    var $option = document.createElement("option");
+    $option.value = demographicList[i];
+    $option.text = demographicList[i];
+    $demographicSelectList.appendChild($option);
+}
 
 //populate select element with possible country values
 countriesUrl = "/fetch_countries";
@@ -113,8 +160,8 @@ Plotly.d3.json(countriesUrl, function (error, response) {
         countryList1.push(response[i]);
         countryList2.push(response[i]);
     }
-    console.log(countryList1);
-    console.log(countryList2);
+    //console.log(countryList1);
+    //console.log(countryList2);
     $countrySelectListCumulativeLine1 = document.getElementById("countrySelectCumulativeLine1");
     $countrySelectListCumulativeLine2 = document.getElementById("countrySelectCumulativeLine2");
     for (var i = 0; i < countryList1.length; i++) {
@@ -130,6 +177,7 @@ Plotly.d3.json(countriesUrl, function (error, response) {
     }
     optionChangedStackedBar();
     optionChangedComparisonCharts();
+    optionChangedDemographicScatter();
 });
 
 buildHostCityMap();
@@ -226,13 +274,21 @@ function optionChangedComparisonCharts() {
 }
 
 function optionChangedDemographicScatter() {
-
+    demographicUrl=`/demographic_scatter_plot/${$genderSelectListDemographicScatter.value}/${$sportSelectListDemographicScatter.value}/${$medalSelectListDemographicScatter.value}/${$yearSelectListDemographics.value}/${$demographicSelectList.value}`
+    Plotly.d3.json(demographicUrl, function (error, response) {
+        if (error){
+            console.log(error);
+        }
+        medalCount = response.medal_list;
+        demographicValues = response.demographic_list;
+        countryList = response.country_list
+        year = $yearSelectListDemographics.value
+        console.log(medalCount);
+        console.log(demographicValues);
+        console.log(countryList);
+        console.log(year);
+    });
 }
-
-function buildCumulativeLine() {
-
-}
-
 
 function buildHostCityMap() {
 
