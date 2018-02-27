@@ -10,6 +10,7 @@ Plotly.d3.json(gendersUrl, function (error, response) {
     $genderSelectListStackedBar = document.getElementById("genderSelectStackedBar");
     $genderSelectListCumulativeLine = document.getElementById("genderSelectCumulativeLine");
     $genderSelectListDemographicScatter = document.getElementById("genderSelectDemographicScatter");
+    $genderSelectListComparisonPie = document.getElementById("genderSelectComparisonPie");
     for (var i = 0; i < genderList.length; i++) {
         var $optionStackedBar = document.createElement("option");
         $optionStackedBar.value = genderList[i];
@@ -25,6 +26,11 @@ Plotly.d3.json(gendersUrl, function (error, response) {
         $optionDemographicScatter.value = genderList[i];
         $optionDemographicScatter.text = genderList[i];
         $genderSelectListDemographicScatter.appendChild($optionDemographicScatter);
+
+        var $optionComparisonPie = document.createElement("option");
+        $optionComparisonPie.value = genderList[i];
+        $optionComparisonPie.text = genderList[i];
+        $genderSelectListComparisonPie.appendChild($optionComparisonPie);
     }
 });
 
@@ -39,6 +45,7 @@ Plotly.d3.json(medalsUrl, function (error, response) {
     //console.log(medalList);
     $medalSelectListCumulativeLine = document.getElementById("medalSelectCumulativeLine");
     $medalSelectListDemographicScatter = document.getElementById("medalSelectDemographicScatter");
+    $medalSelectListComparisonPie = document.getElementById("medalSelectComparisonPie");
     for (var i = 0; i < medalList.length; i++) {
         var $optionCumulativeLine = document.createElement("option");
         $optionCumulativeLine.value = medalList[i];
@@ -49,6 +56,11 @@ Plotly.d3.json(medalsUrl, function (error, response) {
         $optionDemographicScatter.value = medalList[i];
         $optionDemographicScatter.text = medalList[i];
         $medalSelectListDemographicScatter.appendChild($optionDemographicScatter);
+
+        var $optionComparisonPie = document.createElement("option");
+        $optionComparisonPie.value = medalList[i];
+        $optionComparisonPie.text = medalList[i];
+        $medalSelectListComparisonPie.appendChild($optionComparisonPie);
     }
 });
 
@@ -113,11 +125,17 @@ Plotly.d3.json(yearsUrl, function (error, response) {
     }
     //console.log(yearList);
     $yearSelectListStackedBar = document.getElementById("yearSelectStackedBar");
+    $yearSelectListComparisonPie = document.getElementById("yearSelectComparisonPie");
     for (var i = 0; i < yearList.length; i++) {
-        var $option = document.createElement("option");
-        $option.value = yearList[i];
-        $option.text = yearList[i];
-        $yearSelectListStackedBar.appendChild($option);
+        var $optionStackedBar = document.createElement("option");
+        $optionStackedBar.value = yearList[i];
+        $optionStackedBar.text = yearList[i];
+        $yearSelectListStackedBar.appendChild($optionStackedBar);
+
+        var $optionComparisonPie = document.createElement("option");
+        $optionComparisonPie.value = yearList[i];
+        $optionComparisonPie.text = yearList[i];
+        $yearSelectListComparisonPie.appendChild($optionComparisonPie);
     }
 });
 
@@ -162,18 +180,18 @@ Plotly.d3.json(countriesUrl, function (error, response) {
     }
     //console.log(countryList1);
     //console.log(countryList2);
-    $countrySelectListCumulativeLine1 = document.getElementById("countrySelectCumulativeLine1");
-    $countrySelectListCumulativeLine2 = document.getElementById("countrySelectCumulativeLine2");
+    $countrySelectListComparisonPlots1 = document.getElementById("countrySelectComparisonPlots1");
+    $countrySelectListComparisonPlots2 = document.getElementById("countrySelectComparisonPlots2");
     for (var i = 0; i < countryList1.length; i++) {
-        var $optionCumulativeLine1 = document.createElement("option");
-        $optionCumulativeLine1.value = countryList1[i];
-        $optionCumulativeLine1.text = countryList1[i];
-        $countrySelectListCumulativeLine1.appendChild($optionCumulativeLine1);
+        var $optionComparisonPlots1 = document.createElement("option");
+        $optionComparisonPlots1.value = countryList1[i];
+        $optionComparisonPlots1.text = countryList1[i];
+        $countrySelectListComparisonPlots1.appendChild($optionComparisonPlots1);
 
-        var $optionCumulativeLine2 = document.createElement("option");
-        $optionCumulativeLine2.value = countryList2[i];
-        $optionCumulativeLine2.text = countryList2[i];
-        $countrySelectListCumulativeLine2.appendChild($optionCumulativeLine2);
+        var $optionComparisonPlots2 = document.createElement("option");
+        $optionComparisonPlots2.value = countryList2[i];
+        $optionComparisonPlots2.text = countryList2[i];
+        $countrySelectListComparisonPlots2.appendChild($optionComparisonPlots2);
     }
     optionChangedStackedBar();
     optionChangedComparisonCharts();
@@ -251,14 +269,15 @@ function optionChangedComparisonCharts() {
     console.log(`Gender: ${$genderSelectListCumulativeLine.value}`);
     console.log(`Medal Type: ${$medalSelectListCumulativeLine.value}`);
     console.log(`Sport: ${$sportSelectListCumulativeLine.value}`);
-    console.log(`Country 1: ${$countrySelectListCumulativeLine1.value}`);
-    console.log(`Country 2: ${$countrySelectListCumulativeLine2.value}`);
-    comparisonDataUrl = `/cumulative_line_plot/${$genderSelectListCumulativeLine.value}/${$sportSelectListCumulativeLine.value}/${$medalSelectListCumulativeLine.value}/${$countrySelectListCumulativeLine1.value}/${$countrySelectListCumulativeLine2.value}`;
-    if ($countrySelectListCumulativeLine1.value==='Country 1' || $countrySelectListCumulativeLine2.value==='Country 2' || $countrySelectListCumulativeLine1.value===$countrySelectListCumulativeLine2.value){
+    console.log(`Country 1: ${$countrySelectListComparisonPlots1.value}`);
+    console.log(`Country 2: ${$countrySelectListComparisonPlots2.value}`);
+    cumulativeLineUrl = `/cumulative_line_plot/${$genderSelectListCumulativeLine.value}/${$sportSelectListCumulativeLine.value}/${$medalSelectListCumulativeLine.value}/${$countrySelectListComparisonPlots1.value}/${$countrySelectListComparisonPlots2.value}`;
+    cumulativePieUrl = `/comparison_pie_plot/${$genderSelectListComparisonPie.value}/${$yearSelectListComparisonPie.value}/${$medalSelectListComparisonPie.value}/${$countrySelectListComparisonPlots1.value}/${$countrySelectListComparisonPlots2.value}`;
+    if ($countrySelectListComparisonPlots1.value==='Country 1' || $countrySelectListComparisonPlots2.value==='Country 2' || $countrySelectListComparisonPlots1.value===$countrySelectListComparisonPlots2.value){
         console.log("Please select two unique countries to compare!")
     }
     else{
-        Plotly.d3.json(comparisonDataUrl, function (error, response) {
+        Plotly.d3.json(cumulativeLineUrl, function (error, response) {
             if (error){
                 console.log(error);
             }
@@ -269,6 +288,17 @@ function optionChangedComparisonCharts() {
             console.log(country2Medals);
             console.log(yearsToPlot);
     
+        });
+        Plotly.d3.json(cumulativePieUrl, function (error, response) {
+            if (error){
+                console.log(error);
+            }
+            country1Medals = response.country1;
+            country2Medals = response.country2;
+            sportsToPlot = response.sports;
+            console.log(country1Medals);
+            console.log(country2Medals);
+            console.log(sportsToPlot);
         });
     }
 }
