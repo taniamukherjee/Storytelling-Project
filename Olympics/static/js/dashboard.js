@@ -158,7 +158,7 @@ Plotly.d3.json(yearsUrl, function (error, response) {
 });
 
 //build demographic select list
-demographicList = ['Population','GDP','Temperature'];
+demographicList = ['Population', 'GDP', 'Temperature'];
 //console.log(demographicList);
 $demographicSelectList = document.getElementById("demographicSelect");
 for (var i = 0; i < demographicList.length; i++) {
@@ -273,12 +273,12 @@ function optionChangedComparisonCharts() {
     console.log(`Country 2: ${$countrySelectListComparisonPlots2.value}`);
     cumulativeLineUrl = `/cumulative_line_plot/${$genderSelectListCumulativeLine.value}/${$sportSelectListCumulativeLine.value}/${$medalSelectListCumulativeLine.value}/${$countrySelectListComparisonPlots1.value}/${$countrySelectListComparisonPlots2.value}`;
     cumulativePieUrl = `/comparison_pie_plot/${$genderSelectListComparisonPie.value}/${$yearSelectListComparisonPie.value}/${$medalSelectListComparisonPie.value}/${$countrySelectListComparisonPlots1.value}/${$countrySelectListComparisonPlots2.value}`;
-    if ($countrySelectListComparisonPlots1.value==='Country 1' || $countrySelectListComparisonPlots2.value==='Country 2' || $countrySelectListComparisonPlots1.value===$countrySelectListComparisonPlots2.value){
+    if ($countrySelectListComparisonPlots1.value === 'Country 1' || $countrySelectListComparisonPlots2.value === 'Country 2' || $countrySelectListComparisonPlots1.value === $countrySelectListComparisonPlots2.value) {
         console.log("Please select two unique countries to compare!")
     }
-    else{
+    else {
         Plotly.d3.json(cumulativeLineUrl, function (error, response) {
-            if (error){
+            if (error) {
                 console.log(error);
             }
             country1Medals = response.country1;
@@ -287,10 +287,10 @@ function optionChangedComparisonCharts() {
             console.log(country1Medals);
             console.log(country2Medals);
             console.log(yearsToPlot);
-    
+
         });
         Plotly.d3.json(cumulativePieUrl, function (error, response) {
-            if (error){
+            if (error) {
                 console.log(error);
             }
             country1Medals = response.country1;
@@ -304,9 +304,9 @@ function optionChangedComparisonCharts() {
 }
 
 function optionChangedDemographicScatter() {
-    demographicUrl=`/demographic_scatter_plot/${$genderSelectListDemographicScatter.value}/${$sportSelectListDemographicScatter.value}/${$medalSelectListDemographicScatter.value}/${$yearSelectListDemographics.value}/${$demographicSelectList.value}`
+    demographicUrl = `/demographic_scatter_plot/${$genderSelectListDemographicScatter.value}/${$sportSelectListDemographicScatter.value}/${$medalSelectListDemographicScatter.value}/${$yearSelectListDemographics.value}/${$demographicSelectList.value}`
     Plotly.d3.json(demographicUrl, function (error, response) {
-        if (error){
+        if (error) {
             console.log(error);
         }
         medalCount = response.medal_list;
@@ -317,6 +317,41 @@ function optionChangedDemographicScatter() {
         console.log(demographicValues);
         console.log(countryList);
         console.log(year);
+        var trace1 = {
+            x: demographicValues,
+            y: medalCount,
+            mode: 'markers',
+            type: 'scatter',
+            name: 'country vs medels',
+            text: countryList,
+            marker: { size: 12 }
+        };
+        var data = [trace1];
+
+        if ($demographicSelectList.value == 'Population') {
+            var layout = {
+                xaxis: {
+                    type: 'log',
+                    autorange: true
+                },
+                title: 'Medal Count vs. Population'
+            };
+        }
+        else if ($demographicSelectList.value == 'GDP (USD)') {
+            var layout = {
+                xaxis: {
+                    type: 'log',
+                    autorange: true
+                },
+                title: 'Medal Count vs.GDP'
+            };
+        }
+        else if ($demographicSelectList.value == 'Temperature (Degrees Celsius)') {
+            var layout = {
+                title: 'Medal Count vs.Temperature'
+            }
+        }
+        Plotly.newPlot('demographicScatterPlot', data, layout);
     });
 }
 
