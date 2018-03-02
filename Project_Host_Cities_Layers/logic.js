@@ -95,8 +95,17 @@ for (var i = 0; i < winterlocations.length; i++) {
    );
 }
 
-var northwinterMarkers = [L.marker([61.1153, 10.4662]).bindPopup("<h1> Lillehammer, Norway</h1> <hr> <h3>Year: 1994</h3> <h3>Gold Medal Increase: +28%</h3>")];
-var southwinterMarkers = [L.marker([36.6513, 138.181]).bindPopup("<h1> Nagano, Japan</h1> <hr> <h3>Year: 1998</h3> <h3>Gold Medal Increase: +800%</h3>")];
+var redIcon = new L.Icon({
+  iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+
+var northwinterMarkers = [L.marker([61.1153, 10.4662], {icon: redIcon}).bindPopup("<h1> Lillehammer, Norway</h1> <hr> <h3>Year: 1994</h3> <h3>Gold Medal Increase: +28%</h3>")];
+var southwinterMarkers = [L.marker([36.6513, 138.181], {icon: redIcon}).bindPopup("<h1> Nagano, Japan</h1> <hr> <h3>Year: 1998</h3> <h3>Gold Medal Increase: +800%</h3>")];
 
 // Define variables for our base layers
 var streetmap = L.tileLayer(
