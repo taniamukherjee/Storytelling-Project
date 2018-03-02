@@ -489,9 +489,10 @@ function optionChangedComparisonCharts() {
 
             }];
 
-            var layout = {
+            var layout1 = {
                 height: 400,
-                width: 500
+                width: 500,
+                title :country1_select
             };
 
             var country2_pie = [{
@@ -500,13 +501,15 @@ function optionChangedComparisonCharts() {
                 type: 'pie'
             }];
 
-            var layout = {
+            var layout2 = {
                 height: 400,
-                width: 500
+                width: 500,
+                title : country2_select
+            
             };
 
-            Plotly.newPlot('countryComparisonPie1', country1_pie, layout);
-            Plotly.newPlot('countryComparisonPie2', country2_pie, layout);
+            Plotly.newPlot('countryComparisonPie1', country1_pie, layout1);
+            Plotly.newPlot('countryComparisonPie2', country2_pie, layout2);
         });
     }
 
@@ -534,6 +537,7 @@ function optionChangedDemographicScatter() {
             name: 'country vs medels',
             text: countryList,
             marker: { size: 12 }
+            
         };
         var data = [trace1];
 
@@ -541,8 +545,17 @@ function optionChangedDemographicScatter() {
             var layout = {
                 xaxis: {
                     type: 'log',
-                    autorange: true
+                    autorange: true,
+                    linecolor: 'black',
+                    mirror: true,
+                    text:'Population'
                 },
+                yaxis:  {
+                    linecolor: 'black',
+                    mirror: true,
+                    text:'Population'
+                },
+                
                 title: 'Medal Count vs. Population'
             };
         }
@@ -550,16 +563,36 @@ function optionChangedDemographicScatter() {
             var layout = {
                 xaxis: {
                     type: 'log',
-                    autorange: true
+                    autorange: true,
+                    linecolor: 'black',
+                    mirror: true,
+                    text:'Population'
                 },
+                yaxis:  {
+                    linecolor: 'black',
+                    mirror: true,
+                    text:'Population'
+                },
+                
                 title: 'Medal Count vs.GDP'
             };
         }
         else if ($demographicSelectList.value == 'Temperature (Degrees Celsius)') {
             var layout = {
+                xaxis: {
+                    linecolor: 'black',
+                    mirror: true
+                },
+                yaxis:  {
+                    linecolor: 'black',
+                    mirror: true
+                },
+                
                 title: 'Medal Count vs.Temperature'
             }
         }
+       
+    
         Plotly.newPlot('demographicScatterPlot', data, layout);
     });
 }
